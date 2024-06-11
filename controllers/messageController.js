@@ -1,25 +1,23 @@
 const Message = require('../models/Message');
-const Student = require('../models/Student');
-const Tutor = require('../models/Tutor');
+const { createNotification } = require('./notificationController');
 
 // Send a message
 const sendMessage = async (req, res) => {
+  const { senderId, senderType, receiverId, receiverType, content } = req.body;
+
   try {
-    const { receiverId, content } = req.body;
-    const senderId = req.user._id;
-
-    const receiver = await Student.findById(receiverId) || await Tutor.findById(receiverId);
-    if (!receiver) {
-      return res.status(404).json({ message: 'Receiver not found' });
-    }
-
     const message = new Message({
-      sender: senderId,
-      receiver: receiverId,
-      content,
+      senderId,
+      senderType,
+      receiverId,
+      receiverType,
+      content
     });
 
     await message.save();
+
+    // Create a notification for the receiver
+    createNotification(receiverId, receiverType, 'You have a new message');
 
     res.status(201).json(message);
   } catch (error) {
@@ -28,18 +26,18 @@ const sendMessage = async (req, res) => {
   }
 };
 
-// Get messages between two users
+// Get all messages for a user
 const getMessages = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const currentUserId = req.user._id;
+  const userId = req.student ? req.student._id : req.tutor._id;
+  const userType = req.student ? 'Student' : 'Tutor';
 
+  try {
     const messages = await Message.find({
       $or: [
-        { sender: currentUserId, receiver: userId },
-        { sender: userId, receiver: currentUserId },
-      ],
-    }).sort({ timestamp: 1 });
+        { senderId: userId, senderType: userType },
+        { receiverId: userId, receiverType: userType }
+      ]
+    }).sort({ createdAt: -1 });
 
     res.json(messages);
   } catch (error) {
@@ -50,5 +48,5 @@ const getMessages = async (req, res) => {
 
 module.exports = {
   sendMessage,
-  getMessages,
+  getMessages
 };

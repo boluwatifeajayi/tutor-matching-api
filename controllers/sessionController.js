@@ -1,6 +1,7 @@
 const Session = require('../models/Session');
 const Tutor = require('../models/Tutor');
 const Student = require('../models/Student');
+const { createNotification } = require('./notificationController');
 
 // Student books a session with a tutor
 const bookSession = async (req, res) => {
@@ -15,9 +16,9 @@ const bookSession = async (req, res) => {
     // Check if the tutor is available at the requested date and time
     const day = new Date(date).getDay();
     const availableTimes = tutor.availableTime.get(day.toString());
-    // if (!availableTimes || !availableTimes.includes(time)) {
-    //   return res.status(400).json({ message: 'Tutor is not available at the requested date and time' });
-    // }
+    if (!availableTimes || !availableTimes.includes(time)) {
+      return res.status(400).json({ message: 'Tutor is not available at the requested date and time' });
+    }
 
     const session = new Session({
       courseName,
@@ -39,6 +40,9 @@ const bookSession = async (req, res) => {
     });
 
     await session.save();
+
+    // Notify the tutor
+    await createNotification(tutor._id, 'tutor', 'A new session has been booked.');
 
     res.status(201).json(session);
   } catch (error) {
@@ -74,6 +78,9 @@ const updateSessionStatus = async (req, res) => {
     }
 
     await session.save();
+
+    // Notify the student
+    await createNotification(session.student.studentID, 'student', `Your session has been ${status}.`);
 
     res.json(session);
   } catch (error) {
@@ -115,9 +122,7 @@ const cancelSession = async (req, res) => {
       return res.status(404).json({ message: 'Session not found' });
     }
 
-    session.sessionStatus = 'canceled';
-
-    await session.save();
+    session.sessionStatus = (session.student.studentID,'student', 'Your session has been canceled by the tutor.');
 
     res.json(session);
   } catch (error) {
@@ -141,6 +146,9 @@ const completeSession = async (req, res) => {
 
     await session.save();
 
+    // Notify the student
+    await createNotification(session.student.studentID, 'student', 'Your session has been marked as completed.');
+
     res.json(session);
   } catch (error) {
     console.error(error);
@@ -156,3 +164,4 @@ module.exports = {
   cancelSession,
   completeSession,
 };
+

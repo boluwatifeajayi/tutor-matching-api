@@ -1,24 +1,34 @@
 const mongoose = require('mongoose');
 
 const MessageSchema = new mongoose.Schema({
-  sender: {
+  senderId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
     required: true,
+    refPath: 'senderType'
   },
-  receiver: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+  senderType: {
+    type: String,
     required: true,
+    enum: ['Student', 'Tutor']
+  },
+  receiverId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    refPath: 'receiverType'
+  },
+  receiverType: {
+    type: String,
+    required: true,
+    enum: ['Student', 'Tutor']
   },
   content: {
     type: String,
-    required: true,
+    required: true
   },
-  timestamp: {
+  createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const Message = mongoose.model('Message', MessageSchema);

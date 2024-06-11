@@ -48,3 +48,6 @@ StudentSchema.methods.isValidPassword = async function(password) {
 const Student = mongoose.model('Student', StudentSchema);
 
 module.exports = Student;
+
+
+
