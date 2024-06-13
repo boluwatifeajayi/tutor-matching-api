@@ -20,9 +20,8 @@ const TutorSchema = new mongoose.Schema({
     required: true
   },
   availableTime: {
-    type: Map,
-    of: [String],
-    default: {}
+    type: String,
+    required: true
   },
   courses: {
     type: [String],

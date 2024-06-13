@@ -6,7 +6,7 @@ const Student = require('../models/Student');
 // Register a new tutor
 const registerTutor = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, teachingMethods, courses, qualifications } = req.body;
+    const { firstName, lastName, email, password, teachingMethods, courses, qualifications, availableTime } = req.body;
 
     const tutorExists = await Tutor.findOne({ email });
 
@@ -20,6 +20,7 @@ const registerTutor = async (req, res) => {
       email,
       password: await bcrypt.hash(password, 10),
       teachingMethods,
+      availableTime,
       courses,
       qualifications,
     });
@@ -32,6 +33,7 @@ const registerTutor = async (req, res) => {
       lastName: tutor.lastName,
       email: tutor.email,
       role: tutor.role,
+      availableTime: tutor.availableTime,
       token: jwtUtils.generateToken(tutor._id),
     });
   } catch (error) {
@@ -76,6 +78,7 @@ const updateTutorInformation = async (req, res) => {
       tutor.teachingMethods = req.body.teachingMethods || tutor.teachingMethods;
       tutor.courses = req.body.courses || tutor.courses;
       tutor.qualifications = req.body.qualifications || tutor.qualifications;
+      tutor.availableTime = req.body.availableTime || tutor.availableTime;
 
       if (req.body.password) {
         tutor.password = await bcrypt.hash(req.body.password, 10);
