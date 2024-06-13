@@ -163,6 +163,69 @@ const addReviewToTutor = async (req, res) => {
   }
 };
 
+// Get a student by ID
+const getStudentById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const student = await Student.findById(id);
+
+    if (student) {
+      res.json(student);
+    } else {
+      res.status(404).json({ message: 'Student not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Search for students based on discipline, names, learning styles, and courses
+const searchStudents = async (req, res) => {
+  try {
+    const { discipline, firstName, lastName, learningStyle, courses } = req.query;
+    const query = {};
+
+    if (discipline) {
+      query.discipline = { $regex: new RegExp(discipline, 'i') };
+    }
+    if (firstName) {
+      query.firstName = { $regex: new RegExp(firstName, 'i') };
+    }
+    if (lastName) {
+      query.lastName = { $regex: new RegExp(lastName, 'i') };
+    }
+    if (learningStyle) {
+      query.learningStyle = { $regex: new RegExp(learningStyle, 'i') };
+    }
+    if (courses) {
+      query.courses = { $regex: new RegExp(courses, 'i') };
+    }
+
+    const students = await Student.find(query);
+
+    if (students.length > 0) {
+      res.json(students);
+    } else {
+      res.status(404).json({ message: 'No students found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get all students
+const getAllStudents = async (req, res) => {
+  try {
+    const students = await Student.find({});
+    res.json(students);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   registerStudent,
   loginStudent,
@@ -170,4 +233,7 @@ module.exports = {
   updateStudentDetails,
   getMatchingTutors,
   addReviewToTutor,
+  getStudentById,
+  searchStudents,
+  getAllStudents,
 };

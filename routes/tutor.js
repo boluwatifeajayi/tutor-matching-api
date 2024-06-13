@@ -6,7 +6,10 @@ const {
   updateTutorInformation,
   getAllStudents,
   getAllTutors,
-  getTutorDetails
+  getTutorDetails,
+  getTutorById,
+  getTutorsByCourse,
+  searchTutors,
 } = require('../controllers/tutorController');
 const authMiddleware = require('../middleware/tutorMiddleware');
 
@@ -17,7 +20,12 @@ router.post('/login', loginTutor);
 // Protected routes
 router.put('/update', authMiddleware, updateTutorInformation);
 router.get('/me', authMiddleware, getTutorDetails);
-router.get('/students', authMiddleware, getAllStudents);
-router.get('/tutors', authMiddleware, getAllTutors);
+router.get('/students', getAllStudents);
+router.get('/tutors', getAllTutors);
+
+// New routes
+router.get('/get/:id', getTutorById);
+router.get('/course/:course', getTutorsByCourse);
+router.get('/search', searchTutors);
 
 module.exports = router;

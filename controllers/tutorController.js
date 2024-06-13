@@ -93,23 +93,79 @@ const updateTutorInformation = async (req, res) => {
   }
 };
 
-
 // Get logged-in tutor details
 const getTutorDetails = async (req, res) => {
-    try {
-      const tutor = await Tutor.findById(req.tutor._id);
-  
-      if (tutor) {
-        res.json(tutor);
-      } else {
-        res.status(404).json({ message: 'Tutor not found' });
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+  try {
+    const tutor = await Tutor.findById(req.tutor._id);
+
+    if (tutor) {
+      res.json(tutor);
+    } else {
+      res.status(404).json({ message: 'Tutor not found' });
     }
-  };
-  
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get tutor by ID
+const getTutorById = async (req, res) => {
+  try {
+    const tutor = await Tutor.findById(req.params.id);
+
+    if (tutor) {
+      res.json(tutor);
+    } else {
+      res.status(404).json({ message: 'Tutor not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get all tutors under a particular course
+const getTutorsByCourse = async (req, res) => {
+  try {
+    const tutors = await Tutor.find({ courses: req.params.course });
+
+    if (tutors.length > 0) {
+      res.json(tutors);
+    } else {
+      res.status(404).json({ message: 'No tutors found for this course' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Search tutors
+const searchTutors = async (req, res) => {
+  try {
+    const { firstName, lastName, courses, qualifications, teachingMethods } = req.query;
+
+    const query = {};
+
+    if (firstName) query.firstName = new RegExp(firstName, 'i');
+    if (lastName) query.lastName = new RegExp(lastName, 'i');
+    if (courses) query.courses = { $in: courses.split(',') };
+    if (qualifications) query.qualifications = new RegExp(qualifications, 'i');
+    if (teachingMethods) query.teachingMethods = { $in: teachingMethods.split(',') };
+
+    const tutors = await Tutor.find(query);
+
+    if (tutors.length > 0) {
+      res.json(tutors);
+    } else {
+      res.status(404).json({ message: 'No tutors found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 // Get all students
 const getAllStudents = async (req, res) => {
@@ -140,4 +196,7 @@ module.exports = {
   getAllStudents,
   getAllTutors,
   getTutorDetails,
+  getTutorById,
+  getTutorsByCourse,
+  searchTutors,
 };
