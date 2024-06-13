@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
 const studentRoutes = require('./routes/student');
 const tutorRoutes = require('./routes/tutor');
 const sessionRoutes = require('./routes/session');
@@ -12,6 +13,8 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+
+app.use(morgan('dev')); 
 
 app.use('/api/students', studentRoutes);
 app.use('/api/tutors', tutorRoutes);
