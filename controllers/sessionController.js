@@ -13,12 +13,12 @@ const bookSession = async (req, res) => {
       return res.status(404).json({ message: 'Tutor not found' });
     }
 
-    // Check if the tutor is available at the requested date and time
-    const day = new Date(date).getDay();
-    const availableTimes = tutor.availableTime.get(day.toString());
-    if (!availableTimes || !availableTimes.includes(time)) {
-      return res.status(400).json({ message: 'Tutor is not available at the requested date and time' });
-    }
+    // // Check if the tutor is available at the requested date and time
+    // const day = new Date(date).getDay();
+    // const availableTimes = tutor.availableTime.get(day.toString());
+    // if (!availableTimes || !availableTimes.includes(time)) {
+    //   return res.status(400).json({ message: 'Tutor is not available at the requested date and time' });
+    // }
 
     const session = new Session({
       courseName,
