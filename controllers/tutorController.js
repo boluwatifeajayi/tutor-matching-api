@@ -191,6 +191,30 @@ const getAllTutors = async (req, res) => {
   }
 };
 
+// Get matched students based on teaching methods and courses
+const getMatchedStudents = async (req, res) => {
+  try {
+    const tutor = await Tutor.findById(req.tutor._id);
+    if (!tutor) {
+      return res.status(404).json({ message: 'Tutor not found' });
+    }
+
+    const matchedStudents = await Student.find({
+      $and: [
+        { learningStyle: { $in: tutor.teachingMethods } },
+        { courses: { $in: tutor.courses } }
+      ]
+    });
+
+    res.json(matchedStudents);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
 module.exports = {
   registerTutor,
   loginTutor,
@@ -201,4 +225,5 @@ module.exports = {
   getTutorById,
   getTutorsByCourse,
   searchTutors,
+  getMatchedStudents,
 };

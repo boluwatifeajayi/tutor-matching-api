@@ -10,6 +10,7 @@ const {
   getTutorById,
   getTutorsByCourse,
   searchTutors,
+  getMatchedStudents,
 } = require('../controllers/tutorController');
 const authMiddleware = require('../middleware/tutorMiddleware');
 
@@ -27,5 +28,6 @@ router.get('/tutors', getAllTutors);
 router.get('/get/:id', getTutorById);
 router.get('/course/:course', getTutorsByCourse);
 router.get('/search', searchTutors);
+router.get('/matched-students', authMiddleware, getMatchedStudents);
 
 module.exports = router;
