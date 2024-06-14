@@ -147,17 +147,15 @@ const getTutorsByCourse = async (req, res) => {
 // Search tutors
 const searchTutors = async (req, res) => {
   try {
-    const { firstName, lastName, courses, qualifications, teachingMethods } = req.query;
+    const { query } = req.query; // Assuming 'query' parameter will contain the search term
 
-    const query = {};
-
-    if (firstName) query.firstName = new RegExp(firstName, 'i');
-    if (lastName) query.lastName = new RegExp(lastName, 'i');
-    if (courses) query.courses = { $in: courses.split(',') };
-    if (qualifications) query.qualifications = new RegExp(qualifications, 'i');
-    if (teachingMethods) query.teachingMethods = { $in: teachingMethods.split(',') };
-
-    const tutors = await Tutor.find(query);
+    const tutors = await Tutor.find({
+      $or: [
+        { firstName: new RegExp(query, 'i') },
+        { courses: { $in: query.split(',') } },
+        { teachingMethods: { $in: query.split(',') } }
+      ]
+    });
 
     if (tutors.length > 0) {
       res.json(tutors);
@@ -169,6 +167,7 @@ const searchTutors = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // Get all students
 const getAllStudents = async (req, res) => {
