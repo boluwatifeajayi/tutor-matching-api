@@ -89,16 +89,17 @@ const updateSessionStatus = async (req, res) => {
   }
 };
 
-// Get session requests for a tutor
+// Get all session requests for a tutor
 const getSessionRequestsForTutor = async (req, res) => {
   try {
-    const sessions = await Session.find({ 'tutor.tutorID': req.tutor._id, sessionStatus: 'pending' });
+    const sessions = await Session.find({ 'tutor.tutorID': req.tutor._id });
     res.json(sessions);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // Get session booked list for a student
 const getSessionListForStudent = async (req, res) => {
