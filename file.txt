@@ -1,0 +1,17 @@
+{
+  "_id": "666b7bce2e1d53612b233da0",
+  "firstName": "bruce",
+  "lastName": "wayne",
+  "email": "bruce@gmail.com",
+  "discipline": "Mathematics",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI3YmNlMmUxZDUzNjEyYjIzM2RhMCIsImlhdCI6MTcxODQ2MzcyNSwiZXhwIjoxNzIxMDU1NzI1fQ.tSS_tNOqpUPKmKUEB2azVSpxeZeVKbk_-AFcYZ5m1TE"
+}
+
+
+{
+  "_id": "666b892e9ec7baa29af99bf8",
+  "firstName": "Peter",
+  "lastName": "Quil",
+  "email": "peter@gmail.com",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI4OTJlOWVjN2JhYTI5YWY5OWJmOCIsImlhdCI6MTcxODQ2MzY1NiwiZXhwIjoxNzIxMDU1NjU2fQ.pUgy3vjyrrZSSRJoFbX05Ou04tnCpQT2fyZ2BDaVq6A"
+}

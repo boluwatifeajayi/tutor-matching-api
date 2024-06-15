@@ -1,52 +1,124 @@
+// messageController.js
 const Message = require('../models/Message');
-const { createNotification } = require('./notificationController');
+const Tutor = require('../models/Tutor');
+const Student = require('../models/Student');
 
-// Send a message
 const sendMessage = async (req, res) => {
-  const { senderId, senderType, receiverId, receiverType, content } = req.body;
+  const { recipientId, content } = req.body;
 
   try {
+    let sender, senderModel, recipientModel;
+    if (req.tutor) {
+      sender = req.tutor._id;
+      senderModel = 'Tutor';
+      recipientModel = 'Student';  // Assuming the recipient is a student if sender is a tutor
+    } else if (req.student) {
+      sender = req.student._id;
+      senderModel = 'Student';
+      recipientModel = 'Tutor';  // Assuming the recipient is a tutor if sender is a student
+    }
+
     const message = new Message({
-      senderId,
-      senderType,
-      receiverId,
-      receiverType,
-      content
+      sender,
+      senderModel,
+      receiver: recipientId,
+      receiverModel: recipientModel,
+      content,
     });
 
     await message.save();
 
-    // Create a notification for the receiver
-    createNotification(receiverId, receiverType, 'You have a new message');
-
     res.status(201).json(message);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Failed to send message' });
   }
 };
 
-// Get all messages for a user
 const getMessages = async (req, res) => {
-  const userId = req.student ? req.student._id : req.tutor._id;
-  const userType = req.student ? 'Student' : 'Tutor';
-
   try {
+    const user = req.tutor || req.student;
+    const userModel = req.tutor ? 'Tutor' : 'Student';
+
     const messages = await Message.find({
       $or: [
-        { senderId: userId, senderType: userType },
-        { receiverId: userId, receiverType: userType }
-      ]
-    }).sort({ createdAt: -1 });
+        { sender: user._id, senderModel: userModel },
+        { receiver: user._id },
+      ],
+    });
 
     res.json(messages);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Failed to get messages' });
+  }
+};
+
+const getConversation = async (req, res) => {
+  const { otherUserId, otherUserModel } = req.params;
+
+  try {
+    const user = req.tutor || req.student;
+    const userModel = req.tutor ? 'Tutor' : 'Student';
+
+    const conversation = await Message.find({
+      $or: [
+        { sender: user._id, senderModel: userModel, receiver: otherUserId, receiverModel: otherUserModel },
+        { sender: otherUserId, senderModel: otherUserModel, receiver: user._id, receiverModel: userModel },
+      ],
+    });
+
+    res.json(conversation);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to get conversation' });
+  }
+};
+
+const getTutorsForStudent = async (req, res) => {
+  try {
+    const studentId = req.student._id;
+
+    const messages = await Message.find({
+      sender: studentId,
+      senderModel: 'Student'
+    }).distinct('receiver');
+
+    const tutors = await Tutor.find({
+      _id: { $in: messages }
+    }).select('-password');
+
+    res.json(tutors);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to get tutors' });
+  }
+};
+
+const getStudentsForTutor = async (req, res) => {
+  try {
+    const tutorId = req.tutor._id;
+
+    const messages = await Message.find({
+      sender: tutorId,
+      senderModel: 'Tutor'
+    }).distinct('receiver');
+
+    const students = await Student.find({
+      _id: { $in: messages }
+    }).select('-password');
+
+    res.json(students);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to get students' });
   }
 };
 
 module.exports = {
   sendMessage,
-  getMessages
+  getMessages,
+  getConversation,
+  getTutorsForStudent,
+  getStudentsForTutor
 };

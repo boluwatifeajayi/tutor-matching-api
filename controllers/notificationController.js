@@ -19,7 +19,7 @@ const createNotification = async (userId, userType, message) => {
 // Get all notifications for a student
 const getStudentNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find({ userId: req.student._id, userType: 'Student' }).sort({ createdAt: -1 });
+    const notifications = await Notification.find({ userId: req.student._id, userType: 'student' }).sort({ createdAt: -1 });
     res.json(notifications);
   } catch (error) {
     console.error(error);
@@ -30,7 +30,7 @@ const getStudentNotifications = async (req, res) => {
 // Get all notifications for a tutor
 const getTutorNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find({ userId: req.tutor._id, userType: 'Tutor' }).sort({ createdAt: -1 });
+    const notifications = await Notification.find({ userId: req.tutor._id, userType: 'tutor' }).sort({ createdAt: -1 });
     res.json(notifications);
   } catch (error) {
     console.error(error);
