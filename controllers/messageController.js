@@ -79,19 +79,13 @@ const getTutorsForStudent = async (req, res) => {
   try {
     const studentId = req.student._id;
 
-    // Find all messages involving the student, either as sender or receiver
     const messages = await Message.find({
-      $or: [
-        { sender: studentId, senderModel: 'Student' },
-        { receiver: studentId, receiverModel: 'Student' }
-      ]
-    }).distinct('sender receiver');
-
-    // Extract the tutor IDs from the messages
-    const tutorIds = messages.filter(id => id.toString() !== studentId.toString());
+      sender: studentId,
+      senderModel: 'Student'
+    }).distinct('receiver' || 'sender');
 
     const tutors = await Tutor.find({
-      _id: { $in: tutorIds }
+      _id: { $in: messages }
     }).select('-password');
 
     res.json(tutors);
@@ -101,25 +95,17 @@ const getTutorsForStudent = async (req, res) => {
   }
 };
 
-
-
 const getStudentsForTutor = async (req, res) => {
   try {
     const tutorId = req.tutor._id;
 
-    // Find all messages involving the tutor, either as sender or receiver
     const messages = await Message.find({
-      $or: [
-        { sender: tutorId, senderModel: 'Tutor' },
-        { receiver: tutorId, receiverModel: 'Tutor' }
-      ]
-    }).distinct('sender receiver');
-
-    // Extract the student IDs from the messages
-    const studentIds = messages.filter(id => id.toString() !== tutorId.toString());
+      sender: tutorId,
+      senderModel: 'Tutor'
+    }).distinct('receiver' || 'sender');
 
     const students = await Student.find({
-      _id: { $in: studentIds }
+      _id: { $in: messages }
     }).select('-password');
 
     res.json(students);
@@ -128,7 +114,6 @@ const getStudentsForTutor = async (req, res) => {
     res.status(500).json({ message: 'Failed to get students' });
   }
 };
-
 
 module.exports = {
   sendMessage,
