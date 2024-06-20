@@ -82,7 +82,7 @@ const getTutorsForStudent = async (req, res) => {
     const messages = await Message.find({
       sender: studentId,
       senderModel: 'Student'
-    }).distinct('receiver');
+    }).distinct('receiver' || 'sender');
 
     const tutors = await Tutor.find({
       _id: { $in: messages }
@@ -102,7 +102,7 @@ const getStudentsForTutor = async (req, res) => {
     const messages = await Message.find({
       sender: tutorId,
       senderModel: 'Tutor'
-    }).distinct('receiver');
+    }).distinct('receiver' || 'sender');
 
     const students = await Student.find({
       _id: { $in: messages }

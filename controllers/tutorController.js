@@ -80,9 +80,6 @@ const updateTutorInformation = async (req, res) => {
       tutor.qualifications = req.body.qualifications || tutor.qualifications;
       tutor.availableTime = req.body.availableTime || tutor.availableTime;
 
-      if (req.body.password) {
-        tutor.password = await bcrypt.hash(req.body.password, 10);
-      }
 
       const updatedTutor = await tutor.save();
 

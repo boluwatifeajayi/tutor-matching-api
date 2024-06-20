@@ -95,9 +95,7 @@ const updateStudentDetails = async (req, res) => {
       student.courses = req.body.courses || student.courses;
       student.discipline = req.body.discipline || student.discipline;
 
-      if (req.body.password) {
-        student.password = await bcrypt.hash(req.body.password, 10);
-      }
+     
 
       const updatedStudent = await student.save();
 
