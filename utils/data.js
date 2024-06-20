@@ -17,27 +17,24 @@ const popularDisciplines = [
   ];
   
   const popularSkills = [
-   
-    'Project Management',   // Essential skill for leading projects
-    'Communication',
-    'Data Analytics',
-  'Social Media',
-  'UI/UX Design',
-  'Programming',       // Crucial in any field
-    'Critical Thinking',    // Analyzing information and solving problems
-    'Problem-Solving',     // Finding solutions to complex challenges
-    'Creativity',          // Generating new ideas and approaches
-    'Leadership',          // Inspiring and guiding others
-    'Public Speaking',      // Effective communication for audiences
-    'Negotiation',          // Key skill for business and personal life
-    'Financial Literacy',    // Managing personal finances effectively
-    'Time Management',       // Essential for productivity and organization
-    'Interpersonal Skills',   // Building and maintaining relationships
-    'software engineering',          // Communicating ideas in a compelling way
-               // Finding and analyzing information
-    'Copy Writing',              // Effective communication through writing
-  
-  ];
+    'CSC411 (Software Engineering)',
+    'CSC413 (Algorithms and Complexity Analysis)',
+    'CSC415 (Artificial Intelligence)',
+    'CSC416 (Discrete Structures)',  // Corrected spelling
+    'CSC431 (Computational Science and Numerical Methods)',
+    'CSC433 (Computer Graphics and Animation)',
+    'CSC436 (Compiler Construction II)',
+    'MIS415 (Project Management)',
+    'CIS421 (Computer Security)',
+    'CSC423 (Organization of Programming Languages)',
+    'CSC424 (Computer Networks)',
+    'CSC 425 (Computer Architecture and Organization II)',  // Added space after CSC
+    'CSC441 (HCI)',
+    'CSC442 (Computational Biology & Interdisciplinary Topics)',
+    'CSC443 (Modelling & Simulations)',
+    'CSC444 (Computer System Performance Evaluation)',
+];
+
   
   
   const popularLearningStyles = [
