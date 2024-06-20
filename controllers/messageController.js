@@ -79,17 +79,21 @@ const getTutorsForStudent = async (req, res) => {
   try {
     const studentId = req.student._id;
 
-    const messages = await Message.find({
+    const senderIds = await Message.find({
       $or: [
         { sender: studentId, senderModel: 'Student' },
         { receiver: studentId, receiverModel: 'Student' }
       ]
-    }).distinct('sender').concat(await Message.find({
+    }).distinct('sender');
+
+    const receiverIds = await Message.find({
       $or: [
         { sender: studentId, senderModel: 'Student' },
         { receiver: studentId, receiverModel: 'Student' }
       ]
-    }).distinct('receiver'));
+    }).distinct('receiver');
+
+    const messages = [...senderIds, ...receiverIds];
 
     const uniqueTutorIds = [...new Set(messages)].filter(id => id.toString() !== studentId.toString());
 
@@ -108,17 +112,21 @@ const getStudentsForTutor = async (req, res) => {
   try {
     const tutorId = req.tutor._id;
 
-    const messages = await Message.find({
+    const senderIds = await Message.find({
       $or: [
         { sender: tutorId, senderModel: 'Tutor' },
         { receiver: tutorId, receiverModel: 'Tutor' }
       ]
-    }).distinct('sender').concat(await Message.find({
+    }).distinct('sender');
+
+    const receiverIds = await Message.find({
       $or: [
         { sender: tutorId, senderModel: 'Tutor' },
         { receiver: tutorId, receiverModel: 'Tutor' }
       ]
-    }).distinct('receiver'));
+    }).distinct('receiver');
+
+    const messages = [...senderIds, ...receiverIds];
 
     const uniqueStudentIds = [...new Set(messages)].filter(id => id.toString() !== tutorId.toString());
 
